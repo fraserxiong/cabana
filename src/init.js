@@ -13,8 +13,12 @@ import {
   persistGithubAuthToken
 } from './api/localstorage';
 import { demoProps } from './demo';
+import myLocalAuth from './my-local-auth';
 
 async function authenticate() {
+  if (myLocalAuth.isLogined()){
+    return
+  }
   if (window.location && window.location.pathname === AuthConfig.AUTH_PATH) {
     try {
       const { code, provider } = qs.parse(window.location.search);

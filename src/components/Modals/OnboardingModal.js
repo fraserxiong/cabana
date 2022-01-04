@@ -6,6 +6,7 @@ import CommaAuth, { config as AuthConfig } from '@commaai/my-comma-auth';
 
 import { EXPLORER_URL } from '../../config';
 import Modal from './baseModal';
+import MyLocalAuth from '../../my-local-auth';
 
 export default class OnboardingModal extends Component {
   static propTypes = {
@@ -98,6 +99,10 @@ export default class OnboardingModal extends Component {
     }
   }
 
+  handleSelectedFolder(selected) {
+    console.log(selected);
+  }
+
   renderLogin() {
     if (CommaAuth.isAuthenticated()) {
       return (
@@ -106,6 +111,22 @@ export default class OnboardingModal extends Component {
           <strong>Find a drive in connect</strong>
           <sup>Click "View in cabana" while replaying a drive</sup>
         </button>
+      );
+    } else if (MyLocalAuth.isLogined()) {
+      return (<>
+        <input 
+          directory="" 
+          webkitdirectory="" 
+          type="file"  
+          ref={(ref) => this.selectFolder = ref} 
+          style={{ display: 'none' }} 
+          onChange={(event) => this.handleSelectedFolder(event.target.files)}/>
+        <button onClick={() => this.selectFolder.click()} className="button--primary button--kiosk">
+          <i className="fa fa-folder" />
+          <strong>Find a drive in local folder</strong>
+          <sup>Include all the folders that you want to view</sup>
+        </button>
+        </>
       );
     } else {
       return <>
@@ -121,6 +142,10 @@ export default class OnboardingModal extends Component {
           <i className="fa fa-github" />
           <strong>Sign in with GitHub</strong>
         </a>
+        <button onClick = {MyLocalAuth.login} className="button button--primary button--icon">
+          <i className="fa fa-folder" />
+          <strong>View local Log only</strong>
+        </button>
       </>;
     }
   }
@@ -250,7 +275,7 @@ export default class OnboardingModal extends Component {
   render() {
     return (
       <Modal
-        title="Welcome to Cabana"
+        title="Welcome to Cabana on Land"
         subtitle="Get started by selecting a drive from connect or enabling live mode"
         footer={this.renderModalFooter()}
         disableClose
